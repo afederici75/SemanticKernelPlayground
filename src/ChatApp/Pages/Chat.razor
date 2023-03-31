@@ -1,0 +1,33 @@
+﻿@page "/chat"
+
+<PageTitle>Chat</PageTitle>
+
+<h1>Chat</h1>
+
+<p>
+    Enter some text in the prompt
+</p>
+
+<p>
+    @*<input type="text" maxlength="400" @bind="@prompt" placeholder="Your prompt..." />*@
+    <textarea rows="3" cols="60" name="prompt" @bind="@prompt" placeholder="Your prompt..."></textarea>
+</p>
+
+<p>
+    <button class="btn btn-primary" @onclick="SendPrompt">Send</button>
+</p>
+
+<p>
+    <textarea rows="15" cols="60" name="prompt" @bind="@response" placeholder="The response..."></textarea>
+</p>
+
+
+@code {    
+    string prompt = string.Empty;
+    string response = string.Empty;
+
+    void SendPrompt()
+    {
+        
+    }
+}
