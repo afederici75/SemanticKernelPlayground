@@ -1,11 +1,8 @@
-﻿using Microsoft.SemanticKernel.CoreSkills;
-
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Configuration;
+using Microsoft.SemanticKernel.CoreSkills;
 using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.SemanticFunctions;
-using System.Reflection.Metadata;
 
 namespace ChatApp.ChatBox;
 
@@ -14,21 +11,76 @@ namespace ChatApp.ChatBox;
 public class ChatBot : IChatBot
 {
     readonly IKernel Kernel;
+    readonly ChatBotOptions ChatOptions;
     readonly ISKFunction ChatFunction;
-    readonly SKContext Context;    
-
-    public ChatBot(IKernel kernel, IOptions<ChatBotOptions> chatOptions)
-    {        
-        Kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
-        Kernel.ImportSkill(new TextMemorySkill());
+    readonly SKContext Context;
         
-        Context = Kernel.CreateNewContext();
+    public ChatBot(IKernel kernel, IOptions<ChatBotOptions> chatOptions)
+    {
+        ChatOptions = chatOptions.Value;
 
+        // Configure kernel
+        Kernel = ConfigureKernel(kernel ?? throw new ArgumentNullException(nameof(kernel)));
+
+        // Configure context
+        Context = CreateContext(Kernel, ChatOptions).Result;
+        
+        // Configure function
         ChatFunction = Kernel.RegisterSemanticFunction("ChatBot", "Chat", 
-            ConfigureChatFunction(chatOptions.Value));        
+            ConfigureChatFunction(ChatOptions));        
     }
 
-    SemanticFunctionConfig ConfigureChatFunction(ChatBotOptions botOptions)
+    public async Task<string> Chat(string userInput)
+    {
+        Context["userInput"] = userInput;
+        
+        // Ask the question
+        var answer = await ChatFunction.InvokeAsync(Context);
+
+        // Append the new interaction to the chat history
+        Context["history"] += $"\nUser: {userInput}\nChatBot: {answer}\n"; ;
+
+        return Context.ToString();        
+    }
+
+    static IKernel ConfigureKernel(IKernel kernel)
+    {
+        kernel.ImportSkill(new TextMemorySkill());
+
+        return kernel;
+    }
+
+    const string MemoryCollectionName = "aboutMe";
+
+    async Task<SKContext> CreateContext(IKernel kernel, ChatBotOptions chatOptions)
+    {
+        var context = kernel.CreateNewContext();
+        context["history"] = string.Empty;
+
+        context[TextMemorySkill.RelevanceParam] = "0.8";
+        context[TextMemorySkill.CollectionParam] = MemoryCollectionName;
+
+        if (chatOptions.Facts is null)
+            return context;
+
+        var idx = 0;
+        var tasks = chatOptions.Facts.Select(async h =>
+            await kernel.Memory.SaveInformationAsync(
+                collection: MemoryCollectionName,
+                id: $"info{idx++}",
+                text: h.Value));
+
+        await Task.WhenAll(tasks);
+
+        for (idx = 0; idx < chatOptions.Facts.Length; idx++)
+        {
+            context[$"fact{idx}"] = chatOptions.Facts[idx].Key;
+        }
+        
+        return context;
+    }
+
+    SemanticFunctionConfig ConfigureChatFunction(ChatBotOptions chatOptions)
     {
         const string skPrompt = @"
 ChatBot can have a conversation with you about any topic.
@@ -50,29 +102,13 @@ ChatBot: ";
         {
             Completion =
             {
-                MaxTokens = botOptions.MaxTokens,
-                Temperature = botOptions.Temperature,
-                TopP = botOptions.TopP,
+                MaxTokens = chatOptions.MaxTokens,
+                Temperature = chatOptions.Temperature,
+                TopP = chatOptions.TopP,
             }
         };
         var promptTemplate = new PromptTemplate(skPrompt, promptTmplConfiguration, Kernel);
         var functionConfig = new SemanticFunctionConfig(promptTmplConfiguration, promptTemplate);
         return functionConfig;
-    }
-
-    public async Task<string> Chat(string input) 
-    {
-        // Save new message in the context variables
-        Context.Set("human_input", input);
-
-        // Process the user message and get an answer
-        var answer = await Kernel.RunAsync(Context, ChatFunction);
-
-        // Append the new interaction to the chat history
-        History += $"\nHuman: {input}\nChatBot: {answer}\n";
-        Context.Set("history", History);
-
-        // Show the response
-        return Context.ToString();
-    }
+    }      
 }
