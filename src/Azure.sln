@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp", "ChatApp\ChatApp.csproj", "{07CAE8E1-EF98-4E77-B307-7CE351792016}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticKernel", "SemanticKernel\SemanticKernel.csproj", "{5C5BF4B6-53D9-4F5C-860E-0E2D9CF922CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{07CAE8E1-EF98-4E77-B307-7CE351792016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07CAE8E1-EF98-4E77-B307-7CE351792016}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07CAE8E1-EF98-4E77-B307-7CE351792016}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C5BF4B6-53D9-4F5C-860E-0E2D9CF922CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C5BF4B6-53D9-4F5C-860E-0E2D9CF922CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C5BF4B6-53D9-4F5C-860E-0E2D9CF922CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C5BF4B6-53D9-4F5C-860E-0E2D9CF922CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

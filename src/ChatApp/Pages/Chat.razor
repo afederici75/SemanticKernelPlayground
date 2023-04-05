@@ -1,4 +1,7 @@
-﻿@page "/chat"
+﻿@using ChatApp.ChatBox;
+
+@page "/chat"
+@inject IChatBot ChatBot
 
 <PageTitle>Chat</PageTitle>
 
@@ -18,16 +21,22 @@
 </p>
 
 <p>
-    <textarea rows="15" cols="60" name="prompt" @bind="@response" placeholder="The response..."></textarea>
+    <textarea rows="5" cols="60" name="response" @bind="@response" placeholder="The response..."></textarea>
+</p>
+
+<p>
+    <textarea rows="15" cols="60" name="history" @bind="@history" placeholder="The history..."></textarea>
 </p>
 
 
-@code {    
-    string prompt = string.Empty;
+@code {
+    string prompt = "Tell me a joke";
     string response = string.Empty;
+    string history = string.Empty;
 
-    void SendPrompt()
+    async Task SendPrompt()
     {
-        
+        response = await ChatBot.Chat(prompt);
+        history = ChatBot.History;
     }
 }
