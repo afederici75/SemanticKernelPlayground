@@ -10,10 +10,12 @@ public static class DependencyInjectionExtensions
 {
     public static IServiceCollection AddChatBot(this IServiceCollection services, IConfiguration configuration)
     {
-        var options = new OpenAIOptions();
-        configuration.GetSection(OpenAIOptions.SettingName)
-                     .Bind(options);
+        services.Configure<OpenAIOptions>(
+            configuration.GetSection(OpenAIOptions.SettingName));
 
+        services.Configure<ChatBotOptions>(
+            configuration.GetSection(ChatBotOptions.SettingName));
+        
         services.AddTransient<IChatBot, ChatBot>();
 
         services.AddTransient<IKernel>(sp =>
@@ -27,7 +29,7 @@ public static class DependencyInjectionExtensions
 
             var logger = sp.GetService<ILogger>();
             IKernel kernel = Kernel.Builder
-                .WithLogger(logger!)
+                //.WithLogger(logger!)
                 .WithConfiguration(config)
                 .WithMemoryStorage(new VolatileMemoryStore())
                 .Build();

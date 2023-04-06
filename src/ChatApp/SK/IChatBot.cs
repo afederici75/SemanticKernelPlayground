@@ -2,5 +2,7 @@
 
 public interface IChatBot
 {
-    public Task<string> Chat(string input);    
+    public Task<string> Chat(string input);
+
+    public string GetHistory();
 }

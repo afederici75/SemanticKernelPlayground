@@ -30,13 +30,13 @@
 
 
 @code {
-    string prompt = "Tell me a joke";
+    string prompt = "What is my name?";
     string response = string.Empty;
     string history = string.Empty;
 
     async Task SendPrompt()
     {
         response = await ChatBot.Chat(prompt);
-        history = ChatBot.History;
+        history = ChatBot.GetHistory();
     }
 }
