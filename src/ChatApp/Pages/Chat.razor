@@ -1,18 +1,11 @@
 ﻿@using ChatApp.ChatBox;
 
 @page "/chat"
-@inject IChatBot ChatBot
+@inject IChatBot chatBot
 
 <PageTitle>Chat</PageTitle>
 
-<h1>Chat</h1>
-
 <p>
-    Enter some text in the prompt
-</p>
-
-<p>
-    @*<input type="text" maxlength="400" @bind="@prompt" placeholder="Your prompt..." />*@
     <textarea rows="3" cols="60" name="prompt" @bind="@prompt" placeholder="Your prompt..."></textarea>
 </p>
 
@@ -33,10 +26,17 @@
     string prompt = "What is my name?";
     string response = string.Empty;
     string history = string.Empty;
+    
+    Task ChatBot_AnswerReceived(string input, string answer)
+    {
+        response = answer;
+        history = chatBot.GetHistory();
+
+        return Task.CompletedTask;
+    }
 
     async Task SendPrompt()
-    {
-        response = await ChatBot.Chat(prompt);
-        history = ChatBot.GetHistory();
+    {        
+        await chatBot.Send(prompt, ChatBot_AnswerReceived);
     }
 }

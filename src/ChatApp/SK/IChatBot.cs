@@ -1,8 +1,10 @@
 ﻿namespace ChatApp.ChatBox;
 
+public delegate Task AnswerReceived(string userInput, string answer);
+
 public interface IChatBot
 {
-    public Task<string> Chat(string input);
+    public Task Send(string input, AnswerReceived? callback);
 
     public string GetHistory();
 }
