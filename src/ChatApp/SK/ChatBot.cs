@@ -11,7 +11,10 @@ namespace ChatApp.ChatBox;
 
 public class ChatBot : IChatBot
 {
-    const string skPrompt = @"
+    const string HistoryParam = "history";
+    const string UserInputParam = "userInput";
+
+    const string Prompt = @"
 ChatBot can have a conversation with you about any topic.
 It can give explicit instructions or say 'I don't know' if it does not have an answer.
 
@@ -21,10 +24,11 @@ Information about me, from previous conversations:
 - My Name is Alessandro
 
 Chat:
-{{$history}}
-User: {{$userInput}}
+{{$" + HistoryParam + @"}}
+User: {{$" + UserInputParam + @"}}
 ChatBot: ";
 
+// TODO (bug): If I put this in the prompt the chatbot will 'freeze' when executing.
 //- {{$fact1}} {{recall $fact1}}
 //- {{$fact2}} {{recall $fact2}}
 //- {{$fact3}} {{recall $fact3}}
@@ -46,19 +50,20 @@ ChatBot: ";
 
         // Configure function
         ChatFunction = kernel.CreateSemanticFunction(
-            promptTemplate: skPrompt, 
+            promptTemplate: Prompt, 
             maxTokens: ChatOptions.MaxTokens, 
             temperature: ChatOptions.Temperature);        
     }
 
-    public string GetHistory() => (Context is null) ? string.Empty : Context["history"];
+    public string GetHistory() => (Context is null) ? string.Empty : Context[HistoryParam];
 
     public async Task<string> Chat(string userInput)
     {
+        if (string.IsNullOrEmpty(userInput))
+            throw new ArgumentException($"'{nameof(userInput)}' cannot be null or empty.", nameof(userInput));        
+
         if (Context is null)
-        {
-            Context = await CreateContext(Kernel, ChatOptions);
-        }
+            Context = await CreateContext(Kernel, ChatOptions);        
         
         Context["userInput"] = userInput;
                 
@@ -66,24 +71,25 @@ ChatBot: ";
         var answer = await ChatFunction.InvokeAsync(Context);
 
         // Append the new interaction to the chat history
-        Context["history"] += $"\nUser: {userInput}\nChatBot: {answer}\n"; ;
+        Context["history"] += $"\nUser: '{userInput.Trim()}', ChatBot: '{answer.ToString().Trim()}'"; ;
 
         return Context.ToString();        
     }
 
-    static IKernel ConfigureKernel(IKernel kernel)
+    #region Private ---------------------------------------
+    IKernel ConfigureKernel(IKernel kernel)
     {
         kernel.ImportSkill(new TextMemorySkill());
 
         return kernel;
-    }
-
-    const string MemoryCollectionName = "aboutMe";
+    }    
 
     async Task<SKContext> CreateContext(IKernel kernel, ChatBotOptions chatOptions)
     {
+        const string MemoryCollectionName = "aboutMe";
+
         var context = kernel.CreateNewContext();
-        context["history"] = string.Empty;
+        context[HistoryParam] = string.Empty;
 
         kernel.ImportSkill(new TextMemorySkill());
         context[TextMemorySkill.RelevanceParam] = chatOptions.Relevance.ToString(); ;
@@ -105,4 +111,5 @@ ChatBot: ";
         
         return context;
     }
+    #endregion
 }
