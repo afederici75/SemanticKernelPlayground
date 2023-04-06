@@ -1,15 +1,10 @@
 ﻿@page "/chat"
 
+@inject ChatApp.Services.IChatBot chatBot
+
 <PageTitle>Chat</PageTitle>
 
-<h1>Chat</h1>
-
 <p>
-    Enter some text in the prompt
-</p>
-
-<p>
-    @*<input type="text" maxlength="400" @bind="@prompt" placeholder="Your prompt..." />*@
     <textarea rows="3" cols="60" name="prompt" @bind="@prompt" placeholder="Your prompt..."></textarea>
 </p>
 
@@ -18,16 +13,35 @@
 </p>
 
 <p>
-    <textarea rows="15" cols="60" name="prompt" @bind="@response" placeholder="The response..."></textarea>
+    <textarea rows="5" cols="60" name="response" @bind="@response" placeholder="The response..."></textarea>
+</p>
+
+<p>
+    <textarea rows="15" cols="60" name="history" @bind="@history" placeholder="The history..."></textarea>
 </p>
 
 
-@code {    
-    string prompt = string.Empty;
+@code {
+    string prompt = "What is my name and what is my age?";
     string response = string.Empty;
+    string history = string.Empty;
 
-    void SendPrompt()
+    protected override Task OnInitializedAsync()
     {
-        
+        chatBot.AnswerReceived += OnAnswerReceived;
+        return base.OnInitializedAsync();
+    }
+
+    Task OnAnswerReceived(string userInput, string answer)
+    {
+        response = answer;
+        history = chatBot.GetHistory();
+
+        return Task.CompletedTask;
+    }
+
+    async Task SendPrompt()
+    {        
+        await chatBot.Send(prompt);
     }
 }
