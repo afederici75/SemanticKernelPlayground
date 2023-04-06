@@ -1,2 +1,2 @@
-# Azure
-Azure examples and tests
+# SemanticKernel
+SemanticKernel examples and tests
