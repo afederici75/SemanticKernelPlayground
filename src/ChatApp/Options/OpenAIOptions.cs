@@ -1,4 +1,4 @@
-﻿namespace ChatApp.ChatBox;
+﻿namespace ChatApp.Options;
 
 public class OpenAIOptions
 {

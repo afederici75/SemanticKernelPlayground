@@ -1,16 +1,15 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.KernelExtensions;
 using Microsoft.SemanticKernel.Configuration;
-using Microsoft.SemanticKernel.Orchestration;
 
 var kernel = Kernel.Builder.Build();
 
-// For Azure Open AI details please see
 // https://learn.microsoft.com/azure/cognitive-services/openai/quickstart?pivots=rest-api
 kernel.Config.AddOpenAITextCompletion(
-    serviceId: "davinci",                     // Alias used by the kernel
-    modelId: "text-davinci-003",                  // Azure OpenAI *Deployment ID*
-    apiKey: "the key here"        // OpenAI *Key*
+    serviceId: "davinci",         // Alias used by the kernel
+    modelId: "text-davinci-003",  // Azure OpenAI *Deployment ID*
+    // TODO: should go in secrets
+    apiKey: "the key here"        // OpenAI *Key*     
 );
 
 string summarizePrompt = @"

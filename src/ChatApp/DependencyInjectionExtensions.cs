@@ -1,4 +1,4 @@
-﻿using ChatApp.ChatBox;
+﻿using ChatApp.Options;
 using ChatApp.Services;
 using ChatApp.Services.Implementations;
 using Microsoft.Extensions.Options;
@@ -6,7 +6,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Configuration;
 using Microsoft.SemanticKernel.Memory;
 
-namespace ChatApp;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjectionExtensions
 {
