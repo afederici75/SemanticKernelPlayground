@@ -3,6 +3,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.CoreSkills;
 using Microsoft.SemanticKernel.KernelExtensions;
 using Microsoft.SemanticKernel.Orchestration;
+using System.Text;
 
 namespace ChatApp.Services.Implementations;
 
@@ -12,32 +13,12 @@ public class ChatBot : IChatBot
 {
     public static class Params
     {
+        public const string FactsParam = "facts";
         public const string HistoryParam = "history";
         public const string UserInputParam = "userInput";
     }
 
-    const string Prompt = @"
-ChatBot can have a conversation with you about any topic.
-It can give explicit instructions or say 'I don't know' if it does not have an answer.
-
-Information about me, from previous conversations:
-
-- I am 47 years old.
-- My Name is Alessandro
-
-Chat:
-{{$" + Params.HistoryParam + @"}}
-User: {{$" + Params.UserInputParam + @"}}
-ChatBot: ";
-
-    // TODO (bug): If I put this in the prompt the chatbot will 'freeze' when executing.
-    //- {{$fact1}} {{recall $fact1}}
-    //- {{$fact2}} {{recall $fact2}}
-    //- {{$fact3}} {{recall $fact3}}
-    //- {{$fact4}} {{recall $fact4}}
-    //- {{$fact5}} {{recall $fact5}}
-
-
+    
     readonly IKernel Kernel;
     readonly ChatBotOptions ChatOptions;
     readonly ISKFunction ChatFunction;
@@ -45,14 +26,14 @@ ChatBot: ";
 
     public ChatBot(IKernel kernel, IOptions<ChatBotOptions> chatOptions)
     {
-        ChatOptions = chatOptions.Value;
+        ChatOptions = chatOptions.Value; // TODO: validate options        
 
         // Configure kernel
         Kernel = ConfigureKernel(kernel ?? throw new ArgumentNullException(nameof(kernel)));
 
         // Configure function
         ChatFunction = kernel.CreateSemanticFunction(
-            promptTemplate: Prompt,
+            promptTemplate: BuildPrompt(),
             maxTokens: ChatOptions.MaxTokens,
             temperature: ChatOptions.Temperature);
     }
@@ -83,36 +64,68 @@ ChatBot: ";
 
 
     #region Private ---------------------------------------
+    
+    string BuildPrompt()
+    {
+        const string Prompt = @"
+ChatBot can have a conversation with you about any topic.
+It says 'I don't know' if it does not have an answer.
+
+Information about me, from previous conversations:
+{{$" + Params.FactsParam + @"}}
+
+Chat:
+{{$" + Params.HistoryParam + @"}}
+
+User: {{$" + Params.UserInputParam + @"}}
+
+ChatBot: ";
+
+        #region Issues with TextMemorySkill
+        // TODO (bug): If I put this in the prompt the chatbot will 'freeze' when executing. Maybe buggy TextMemorySkill?
+        //- {{$fact1}} {{recall $fact1}}
+        //- {{$fact2}} {{recall $fact2}}
+        //- {{$fact3}} {{recall $fact3}}
+        //- {{$fact4}} {{recall $fact4}}
+        //- {{$fact5}} {{recall $fact5}}
+        #endregion
+
+        return Prompt;
+    }
+
+
+
     IKernel ConfigureKernel(IKernel kernel)
     {
-        kernel.ImportSkill(new TextMemorySkill());
+        //kernel.ImportSkill(new TextMemorySkill());
 
         return kernel;
     }
 
     async Task<SKContext> CreateContext(IKernel kernel, ChatBotOptions chatOptions)
     {
-        const string MemoryCollectionName = "aboutMe";
+        const string MemoryCollectionName = "FactsCollection";
 
         var context = kernel.CreateNewContext();
-        context[Params.HistoryParam] = string.Empty;
-
-        kernel.ImportSkill(new TextMemorySkill());
-        context[TextMemorySkill.RelevanceParam] = chatOptions.Relevance.ToString(); ;
-        context[TextMemorySkill.CollectionParam] = MemoryCollectionName;
+        context[Params.HistoryParam] = string.Empty;       
 
         if (chatOptions.Facts is not null)
         {
             var idx = 0;
+            var sb = new StringBuilder();
             foreach (var fact in chatOptions.Facts)
             {
+                // Adds to the memory but it does not seem to affect the response
+                // Does this work only with Search? What is the purpose of this?
                 await kernel.Memory.SaveInformationAsync(
                         collection: MemoryCollectionName,
                         id: $"info{idx++}",
                         text: fact.Question);
 
-                context[$"fact{idx}"] = fact.Answer;
+                // Adds a fact to the facts
+                sb.AppendLine(fact.Question + ' ' + fact.Answer);                
             }
+            context[Params.FactsParam] = sb.ToString();
         }
 
         return context;
