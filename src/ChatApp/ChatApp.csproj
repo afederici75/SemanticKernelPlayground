@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0-preview.2.23128.3" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="0.9.61.1-preview" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
+    <PackageReference Include="MudBlazor" Version="6.2.1-dev3" />
   </ItemGroup>
 
 </Project>

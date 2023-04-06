@@ -1,4 +1,6 @@
-﻿namespace ChatApp.Services.Implementations;
+﻿using ChatApp.Services.ChatBot.Model;
+
+namespace ChatApp.Services.ChatBot.Implementation;
 
 public class ChatBotOptions
 {

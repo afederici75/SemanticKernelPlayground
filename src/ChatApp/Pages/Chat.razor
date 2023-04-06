@@ -1,6 +1,8 @@
-﻿@page "/chat"
+﻿@using ChatApp.Services.ChatBot;
+@using ChatApp.Services.ChatBot.Model;
 
-@inject ChatApp.Services.IChatBot chatBot
+@page "/chat"
+@inject IChatBot chatBot
 
 <PageTitle>Chat</PageTitle>
 
@@ -32,10 +34,10 @@
         return base.OnInitializedAsync();
     }
 
-    Task OnAnswerReceived(string userInput, string answer)
+    Task OnAnswerReceived(object sender, ChatInteraction interaction)
     {
-        response = answer;
-        history = chatBot.GetHistory();
+        response = interaction.Answer;
+        history = string.Join("\n", chatBot.GetHistory(3).Select(h => h.ToString()));
 
         return Task.CompletedTask;
     }

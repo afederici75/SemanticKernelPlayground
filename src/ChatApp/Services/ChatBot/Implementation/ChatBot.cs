@@ -1,11 +1,12 @@
-﻿using Microsoft.Extensions.Options;
+﻿using ChatApp.Services.ChatBot.Model;
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.CoreSkills;
 using Microsoft.SemanticKernel.KernelExtensions;
 using Microsoft.SemanticKernel.Orchestration;
+using System.Diagnostics;
 using System.Text;
 
-namespace ChatApp.Services.Implementations;
+namespace ChatApp.Services.ChatBot.Implementation;
 
 // https://github.com/microsoft/semantic-kernel/blob/main/samples/notebooks/dotnet/6-memory-and-embeddings.ipynb
 
@@ -18,11 +19,12 @@ public class ChatBot : IChatBot
         public const string UserInputParam = "userInput";
     }
 
-    
+
     readonly IKernel Kernel;
     readonly ChatBotOptions ChatOptions;
     readonly ISKFunction ChatFunction;
     SKContext? Context;
+    readonly List<ChatInteraction> _iteractions = new List<ChatInteraction>();
 
     public ChatBot(IKernel kernel, IOptions<ChatBotOptions> chatOptions)
     {
@@ -40,11 +42,12 @@ public class ChatBot : IChatBot
 
     public event AnswerReceivedEventHandler? AnswerReceived;
 
-    public string GetHistory() => Context is null ? string.Empty : Context[Params.HistoryParam];
-
+    public IEnumerable<ChatInteraction> GetHistory(int? max) => _iteractions.TakeLast(max ?? 10).ToList();
+    
     public async Task Send(string userInput)
     {
         userInput = userInput?.Trim() ?? throw new ArgumentNullException(nameof(userInput));
+        var timer = Stopwatch.StartNew();
 
         if (Context is null)
             Context = await CreateContext(Kernel, ChatOptions);
@@ -55,16 +58,20 @@ public class ChatBot : IChatBot
         var answerText = answer.ToString().Trim();
 
         // Append the new interaction to the chat history
-        Context[Params.HistoryParam] += $"\nUser: '{userInput}', ChatBot: '{answerText}'"; ;
+        Context[Params.HistoryParam] += $"\nUser: '{userInput}', ChatBot: '{answerText}'";
+
+        // Stores the local history
+        var newInteraction = new ChatInteraction(Ask: userInput, Answer: answerText, Duration: timer.Elapsed);
+        _iteractions.Add(newInteraction);
 
         // Invokes the callback
         if (AnswerReceived is not null)
-            await AnswerReceived.Invoke(userInput, answerText);
+            await AnswerReceived.Invoke(this, newInteraction);
     }
 
 
     #region Private ---------------------------------------
-    
+
     string BuildPrompt()
     {
         const string Prompt = @"
@@ -107,7 +114,7 @@ ChatBot: ";
         const string MemoryCollectionName = "FactsCollection";
 
         var context = kernel.CreateNewContext();
-        context[Params.HistoryParam] = string.Empty;       
+        context[Params.HistoryParam] = string.Empty;
 
         if (chatOptions.Facts is not null)
         {
@@ -123,7 +130,7 @@ ChatBot: ";
                         text: fact.Question);
 
                 // Adds a fact to the facts
-                sb.AppendLine(fact.Question + ' ' + fact.Answer);                
+                sb.AppendLine(fact.Question + ' ' + fact.Answer);
             }
             context[Params.FactsParam] = sb.ToString();
         }

@@ -1,6 +1,6 @@
 ﻿using ChatApp.Options;
-using ChatApp.Services;
-using ChatApp.Services.Implementations;
+using ChatApp.Services.ChatBot;
+using ChatApp.Services.ChatBot.Implementation;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Configuration;
