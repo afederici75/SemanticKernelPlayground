@@ -1,4 +1,4 @@
-﻿namespace ChatApp.ChatBox;
+﻿namespace ChatApp.Services;
 
 public class Fact
 {

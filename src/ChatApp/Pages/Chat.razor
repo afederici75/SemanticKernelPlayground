@@ -1,4 +1,5 @@
 ﻿@using ChatApp.ChatBox;
+@using ChatApp.Services;
 
 @page "/chat"
 @inject IChatBot chatBot
@@ -23,11 +24,17 @@
 
 
 @code {
-    string prompt = "What is my name?";
+    string prompt = "What is my name and what is my age?";
     string response = string.Empty;
     string history = string.Empty;
-    
-    Task ChatBot_AnswerReceived(string input, string answer)
+
+    protected override Task OnInitializedAsync()
+    {
+        chatBot.AnswerReceived += OnAnswerReceived;
+        return base.OnInitializedAsync();
+    }
+
+    Task OnAnswerReceived(string userInput, string answer)
     {
         response = answer;
         history = chatBot.GetHistory();
@@ -37,6 +44,6 @@
 
     async Task SendPrompt()
     {        
-        await chatBot.Send(prompt, ChatBot_AnswerReceived);
+        await chatBot.Send(prompt);
     }
 }

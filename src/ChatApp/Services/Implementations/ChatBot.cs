@@ -4,7 +4,7 @@ using Microsoft.SemanticKernel.CoreSkills;
 using Microsoft.SemanticKernel.KernelExtensions;
 using Microsoft.SemanticKernel.Orchestration;
 
-namespace ChatApp.ChatBox;
+namespace ChatApp.Services.Implementations;
 
 // https://github.com/microsoft/semantic-kernel/blob/main/samples/notebooks/dotnet/6-memory-and-embeddings.ipynb
 
@@ -30,12 +30,12 @@ Chat:
 User: {{$" + Params.UserInputParam + @"}}
 ChatBot: ";
 
-// TODO (bug): If I put this in the prompt the chatbot will 'freeze' when executing.
-//- {{$fact1}} {{recall $fact1}}
-//- {{$fact2}} {{recall $fact2}}
-//- {{$fact3}} {{recall $fact3}}
-//- {{$fact4}} {{recall $fact4}}
-//- {{$fact5}} {{recall $fact5}}
+    // TODO (bug): If I put this in the prompt the chatbot will 'freeze' when executing.
+    //- {{$fact1}} {{recall $fact1}}
+    //- {{$fact2}} {{recall $fact2}}
+    //- {{$fact3}} {{recall $fact3}}
+    //- {{$fact4}} {{recall $fact4}}
+    //- {{$fact5}} {{recall $fact5}}
 
 
     readonly IKernel Kernel;
@@ -49,25 +49,27 @@ ChatBot: ";
 
         // Configure kernel
         Kernel = ConfigureKernel(kernel ?? throw new ArgumentNullException(nameof(kernel)));
-        
+
         // Configure function
         ChatFunction = kernel.CreateSemanticFunction(
-            promptTemplate: Prompt, 
-            maxTokens: ChatOptions.MaxTokens, 
-            temperature: ChatOptions.Temperature);        
+            promptTemplate: Prompt,
+            maxTokens: ChatOptions.MaxTokens,
+            temperature: ChatOptions.Temperature);
     }
 
-    public string GetHistory() => (Context is null) ? string.Empty : Context[Params.HistoryParam];
+    public event AnswerReceivedEventHandler? AnswerReceived;
 
-    public async Task Send(string userInput, AnswerReceived? callback)
-    {        
+    public string GetHistory() => Context is null ? string.Empty : Context[Params.HistoryParam];
+
+    public async Task Send(string userInput)
+    {
         userInput = userInput?.Trim() ?? throw new ArgumentNullException(nameof(userInput));
 
         if (Context is null)
             Context = await CreateContext(Kernel, ChatOptions);
 
         // Ask the question
-        Context[Params.UserInputParam] = userInput;               
+        Context[Params.UserInputParam] = userInput;
         var answer = await ChatFunction.InvokeAsync(Context);
         var answerText = answer.ToString().Trim();
 
@@ -75,18 +77,18 @@ ChatBot: ";
         Context[Params.HistoryParam] += $"\nUser: '{userInput}', ChatBot: '{answerText}'"; ;
 
         // Invokes the callback
-        if (callback is not null)
-            await callback(userInput, answerText);        
+        if (AnswerReceived is not null)
+            await AnswerReceived.Invoke(userInput, answerText);
     }
 
-    
+
     #region Private ---------------------------------------
     IKernel ConfigureKernel(IKernel kernel)
     {
         kernel.ImportSkill(new TextMemorySkill());
 
         return kernel;
-    }    
+    }
 
     async Task<SKContext> CreateContext(IKernel kernel, ChatBotOptions chatOptions)
     {
@@ -112,7 +114,7 @@ ChatBot: ";
                 context[$"fact{idx}"] = fact.Answer;
             }
         }
-        
+
         return context;
     }
 
