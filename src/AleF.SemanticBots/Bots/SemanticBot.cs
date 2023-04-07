@@ -1,12 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Configuration;
-using Microsoft.SemanticKernel.Memory;
-using Microsoft.SemanticKernel.SemanticFunctions;
-using System.Reflection;
-using System.Security.Cryptography;
-
-namespace AleF.SemanticBots.Bots;
+﻿namespace AleF.SemanticBots.Bots;
 
 /// <summary>
 /// This class implements the base functionality for a chat bot. 
@@ -14,6 +6,8 @@ namespace AleF.SemanticBots.Bots;
 /// </summary>
 public abstract class SemanticBot : ISemanticBot
 {
+    // https://github.com/microsoft/semantic-kernel/blob/32e35d7c28a40d67bd27d81ddbfe028697c872a7/samples/notebooks/dotnet/4-context-variables-chat.ipynb
+
     public static class Params
     {
         public const string History = "history";
@@ -78,6 +72,7 @@ public abstract class SemanticBot : ISemanticBot
     {
         config.AddOpenAITextCompletion("davinci", NLPOptions.Model, NLPOptions.ApiKey, NLPOptions.Organization);
     }
+
     protected IKernel CreateKernel() 
     {
         IKernel kernel = Microsoft.SemanticKernel.Kernel.Builder

@@ -36,8 +36,8 @@ public class UnitTest1
         Assert.NotEqual("{$BotResponse}", answer, StringComparer.OrdinalIgnoreCase);        
         Assert.NotEqual("{$bot_response}", answer, StringComparer.OrdinalIgnoreCase);
         Assert.NotEqual("{$chatbot_response}", answer, StringComparer.OrdinalIgnoreCase);
+        
         Assert.StartsWith("It is currently", answer, StringComparison.OrdinalIgnoreCase);
-
         Output.WriteLine(answer);
-    }        
+    }
 }
