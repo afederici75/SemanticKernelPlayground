@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Haiku", "Haiku\Haiku.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyNewBlazoriseApp", "Blazorise\MyNewBlazoriseApp.csproj", "{67C1D61C-06B2-48B1-AA1A-976B5D35F891}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AleF.SemanticKernel.ChatBot", "AleF.SemanticKernel.ChatBot\AleF.SemanticKernel.ChatBot.csproj", "{C64F1FA2-79F0-46BB-BE5C-3A4F811A4E0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AleF.SemanticBots", "AleF.SemanticBots\AleF.SemanticBots.csproj", "{C64F1FA2-79F0-46BB-BE5C-3A4F811A4E0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AleF.SemanticBots.Tests", "AleF.SemanticBots.Tests\AleF.SemanticBots.Tests.csproj", "{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C64F1FA2-79F0-46BB-BE5C-3A4F811A4E0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C64F1FA2-79F0-46BB-BE5C-3A4F811A4E0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C64F1FA2-79F0-46BB-BE5C-3A4F811A4E0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

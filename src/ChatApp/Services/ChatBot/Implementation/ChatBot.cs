@@ -111,13 +111,13 @@ ChatBot: ";
 
     async Task<SKContext> CreateContext(IKernel kernel, ChatBotOptions chatOptions)
     {
-        const string MemoryCollectionName = "FactsCollection";
-
         var context = kernel.CreateNewContext();
         context[Params.HistoryParam] = string.Empty;
 
         if (chatOptions.Facts is not null)
         {
+            const string MemoryCollectionName = "FactsCollection";
+
             var idx = 0;
             var sb = new StringBuilder();
             foreach (var fact in chatOptions.Facts)

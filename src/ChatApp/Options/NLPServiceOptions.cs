@@ -1,6 +1,6 @@
 ﻿namespace ChatApp.Options;
 
-public class OpenAIOptions
+public class NLPServiceOptions
 {
     public const string SettingName = "OpenAI";
 
