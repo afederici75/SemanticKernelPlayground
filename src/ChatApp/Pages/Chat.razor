@@ -6,7 +6,6 @@
 
 <PageTitle>Chat</PageTitle>
 
-<div style="height:80%">
     <MudPaper Elevation="2">
     @foreach (var iter in history.ToList())
     {
@@ -19,47 +18,41 @@
         </MudCard>
     }
     </MudPaper>
-</div>
 
-<div style="height:20%">
+<MudForm>
     <MudPaper>
-        <MudTextField @bind-Value="prompt" @onkeydown="@Enter" Label="Type your question..." Variant="Variant.Outlined" />
-        <MudButton  Variant="Variant.Filled" @onclick="SendPrompt" EndIcon="@Icons.Material.Filled.Send">Send</MudButton>
+        <MudTextField @bind-Value="Prompt" Label="Type your question..." Variant="Variant.Outlined" />
+        <MudButton Class="ml-auto" Variant="Variant.Filled" @onclick="SendPrompt" EndIcon="@Icons.Material.Filled.Send">Send</MudButton>
+        <InputText @bind-Value="Prompt"></InputText>
     </MudPaper>
-</div>
+</MudForm>
 
-@code {
-    string prompt = "What is my name and what is my age?";
+@code {    
+    public string Prompt { get; set; } = "What is my name and what is my age?";
+
     string response = string.Empty;
     List<ChatInteraction> history = new List<ChatInteraction>();
+    MudForm form;
 
     protected override Task OnInitializedAsync()
     {
         chatBot.AnswerReceived += OnAnswerReceived;
         return base.OnInitializedAsync();
     }
-
-    public async Task Enter(KeyboardEventArgs e)
-    {
-        if (e.Key == "Enter")// Covers: Enter + NumPad Enter + Mobile keyboard Go to(enter)
-        {
-            await SendPrompt();            
-        }
-    }
-
+    
     Task OnAnswerReceived(object sender, ChatInteraction interaction)
     {
         response = interaction.Answer;
-        history = chatBot.GetHistory().ToList();
+        history = chatBot.GetHistory().ToList();        
+        Prompt = string.Empty;
+        
+        StateHasChanged();
 
         return Task.CompletedTask;
     }
 
     async Task SendPrompt()
     {        
-        await chatBot.Send(prompt);
-        prompt = string.Empty;
-        await Task.Delay(1);
-        StateHasChanged();
+        await chatBot.Send(Prompt);        
     }
 }
