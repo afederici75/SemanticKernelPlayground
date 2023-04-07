@@ -7,7 +7,7 @@
 <PageTitle>Chat</PageTitle>
 
 <div style="height:80%">
-    <MudPaper  Elevation="2">
+    <MudPaper Elevation="2">
     @foreach (var iter in history.ToList())
     {
         <MudCard>
@@ -23,8 +23,8 @@
 
 <div style="height:20%">
     <MudPaper>
-        <MudTextField @bind-Value="prompt" Label="Type your question..." Variant="Variant.Outlined" />    
-        <MudButton Variant="Variant.Filled" @onclick="SendPrompt" EndIcon="@Icons.Material.Filled.Send">Send</MudButton>
+        <MudTextField @bind-Value="prompt" @onkeydown="@Enter" Label="Type your question..." Variant="Variant.Outlined" />
+        <MudButton  Variant="Variant.Filled" @onclick="SendPrompt" EndIcon="@Icons.Material.Filled.Send">Send</MudButton>
     </MudPaper>
 </div>
 
@@ -39,6 +39,14 @@
         return base.OnInitializedAsync();
     }
 
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")// Covers: Enter + NumPad Enter + Mobile keyboard Go to(enter)
+        {
+            await SendPrompt();            
+        }
+    }
+
     Task OnAnswerReceived(object sender, ChatInteraction interaction)
     {
         response = interaction.Answer;
@@ -51,5 +59,7 @@
     {        
         await chatBot.Send(prompt);
         prompt = string.Empty;
+        await Task.Delay(1);
+        StateHasChanged();
     }
 }
