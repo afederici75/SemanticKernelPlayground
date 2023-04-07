@@ -31,9 +31,13 @@ public class UnitTest1
             Options.Create(new SemanticBotOptions())); ;
         
         var answer = await bot.Send("What time is it?");
+
         Assert.NotEqual("Hi there! What would you like to talk about?", answer, StringComparer.OrdinalIgnoreCase);
         Assert.NotEqual("{$BotResponse}", answer, StringComparer.OrdinalIgnoreCase);        
         Assert.NotEqual("{$bot_response}", answer, StringComparer.OrdinalIgnoreCase);
+        Assert.NotEqual("{$chatbot_response}", answer, StringComparer.OrdinalIgnoreCase);
+        Assert.StartsWith("It is currently", answer, StringComparison.OrdinalIgnoreCase);
+
         Output.WriteLine(answer);
     }        
 }

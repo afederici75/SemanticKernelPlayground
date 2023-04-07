@@ -22,6 +22,7 @@ public abstract class SemanticBot : ISemanticBot
 
     public static class Tags
     {
+        public const string ChatBot = "ChatBot";
         public const string Human = "human";
     }
 
@@ -89,12 +90,13 @@ public abstract class SemanticBot : ISemanticBot
     }
 
     protected virtual string GetPrompt() => @$"
-{GetType().Name} can have a conversation with you about any topic.
+{Tags.ChatBot} can have a conversation with you about any topic.
 It can give explicit instructions or say 'I don't know' if it does not have an answer.
 
-{{${Params.History}}}
-{{{Tags.Human}}}: {{${Params.HumanInput}}}
-{GetType().Name}:";
+{{{{${Params.History}}}}}
+
+{Tags.Human}: {{{{${Params.HumanInput}}}}}
+{Tags.ChatBot}:";
 
     protected virtual ISKFunction[] CreateFunctions()
     {
@@ -106,11 +108,12 @@ It can give explicit instructions or say 'I don't know' if it does not have an a
                 Temperature = BotOptions.Temperature,
                 TopP = BotOptions.TopP,
             }
-        }; 
+        };
 
-        var promptTemplate = new PromptTemplate(GetPrompt(), promptConfig, Kernel);
+        var prompt = GetPrompt();
+        var promptTemplate = new PromptTemplate(prompt, promptConfig, Kernel);
         var functionConfig = new SemanticFunctionConfig(promptConfig, promptTemplate);
-        var chatFunction = Kernel.RegisterSemanticFunction(GetType().Name, "Chat", functionConfig);
+        var chatFunction = Kernel.RegisterSemanticFunction(Tags.ChatBot, "Chat", functionConfig);
 
         var funcs = new ISKFunction[]
         {
