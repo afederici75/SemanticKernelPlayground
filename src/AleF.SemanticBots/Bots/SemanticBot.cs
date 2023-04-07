@@ -60,7 +60,7 @@ public abstract class SemanticBot : ISemanticBot
         SKContext answer = await Kernel.RunAsync(Variables, cancellationToken, funcs);
         var cleanAnswer = answer.ToString().Trim();
 
-        _history += $"\n{Tags.Human}: {prompt}\n{GetType().Name}: {answer.ToString()}\n";
+        _history += $"\n{Tags.Human}: {prompt}\n{Tags.ChatBot}: {answer.ToString()}\n";
 
         // TODO: find out how to get each individual token back before the full answer is completed.
         // TODO: raise an OnTokenReceived event or something.
@@ -95,6 +95,7 @@ It can give explicit instructions or say 'I don't know' if it does not have an a
 
     protected virtual ISKFunction[] CreateFunctions()
     {
+        // TODO: this should probably be changed to use the planner
         var promptConfig = new PromptTemplateConfig
         {
             Completion =
