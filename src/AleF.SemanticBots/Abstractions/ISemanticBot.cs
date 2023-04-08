@@ -8,9 +8,14 @@
 public interface ISemanticBot
 {
     /// <summary>
-    /// Sends a prompt to the chat bot.    
+    /// Sends a prompt to the bot and returns the answer.
     /// </summary>
-    /// <param name="prompt">The user's prompt.</param>
-    /// <returns>A task that completes when the answer is received. See <see cref="PromptAnswered">.</returns>
+    /// <param name="prompt">The prompt.</param>
+    /// <returns>The bot's reply.</returns>
     public Task<string> Send(string prompt, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the context variables of the bot. See <see cref="ContextVariables"/>.
+    /// </summary>
+    public ContextVariables Context { get; }
 }

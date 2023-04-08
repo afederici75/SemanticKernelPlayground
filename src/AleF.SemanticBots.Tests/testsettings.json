@@ -1,5 +1,6 @@
 {
   "DetailedErrors": true,
+
   "Logging": {
     "LogLevel": {
       "Default": "Information",
@@ -10,8 +11,8 @@
   "AllowedHosts": "*",
 
   "OpenAI": {
-    //"Model": "text-davinci-002",
-    "Model": "text-davinci-003",
+    "Model": "text-davinci-002",
+    "EmbeddingModel": "text-embedding-ada-002",
     "APIKey": null,
     "Organization": null
   },

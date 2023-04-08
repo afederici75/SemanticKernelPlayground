@@ -12,12 +12,17 @@
 			Blazorise is a component library built on top of Blazor and CSS frameworks like Bootstrap, Tailwind, Bulma and Material.
 		</Description>
 		<Copyright>Copyright 2018-2023 Megabit</Copyright>
+		<UserSecretsId>d92ec969-2621-490f-9aa9-5f8cef2e87f6</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazorise"					Version="1.2.*" />
-		<PackageReference Include="Blazorise.Bootstrap5"		Version="1.2.*" />
+		<PackageReference Include="Blazorise" Version="1.2.*" />
+		<PackageReference Include="Blazorise.Bootstrap5" Version="1.2.*" />
 		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\AleF.SemanticBots\AleF.SemanticBots.csproj" />
 	</ItemGroup>
 
 </Project>

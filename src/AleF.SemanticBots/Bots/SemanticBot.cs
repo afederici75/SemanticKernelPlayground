@@ -4,7 +4,7 @@
 /// This class implements the base functionality for a chat bot. 
 /// It implements the interface <see cref="ISemanticBot"/>.
 /// </summary>
-public abstract class SemanticBot : ISemanticBot
+public class SemanticBot : ISemanticBot
 {
     // https://github.com/microsoft/semantic-kernel/blob/32e35d7c28a40d67bd27d81ddbfe028697c872a7/samples/notebooks/dotnet/4-context-variables-chat.ipynb
 
@@ -24,14 +24,13 @@ public abstract class SemanticBot : ISemanticBot
     readonly protected SemanticBotOptions BotOptions;
     readonly protected NLPServiceOptions NLPOptions;
     readonly protected ILogger Logger;
-    readonly protected ISKFunction[]? Functions;
-    readonly protected ContextVariables Variables;
+    readonly protected ISKFunction[]? Functions;    
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SemanticBot"/> class.
     /// </summary>
     public SemanticBot(
-        ILogger logger,
+        ILogger<SemanticBot> logger,
         IOptions<NLPServiceOptions> nlpOptions, 
         IOptions<SemanticBotOptions> botOptions)
     {
@@ -42,9 +41,11 @@ public abstract class SemanticBot : ISemanticBot
         Kernel = CreateKernel() ?? throw new ArgumentNullException(nameof(Kernel));
         Functions = CreateFunctions() ?? throw new ArgumentNullException(nameof(Functions)); // TODO: ArgumentNullException?
 
-        Variables = new ();
+        Context = new ();
         _history = string.Empty;        
     }
+
+    public ContextVariables Context { get; }
 
     string _history;
     /// <inheritdoc/>
@@ -54,13 +55,13 @@ public abstract class SemanticBot : ISemanticBot
         var funcs = Functions?.ToArray() ?? throw new ArgumentNullException(nameof(Functions));
 
         // Ask the question        
-        Variables.Set(Params.HumanInput, prompt);
-        Variables.Set(Params.History, _history);
+        Context.Set(Params.HumanInput, prompt);
+        Context.Set(Params.History, _history);
 
-        SKContext answer = await Kernel.RunAsync(Variables, cancellationToken, funcs);
+        SKContext answer = await Kernel.RunAsync(Context, cancellationToken, funcs);
         var cleanAnswer = answer.ToString().Trim();
 
-        _history += $"\n{Tags.Human}: {prompt}\n{Tags.ChatBot}: {answer.ToString()}\n";
+        _history += $"\n{Tags.Human}: {prompt}\n{Tags.ChatBot}: {cleanAnswer.ToString()}\n";
 
         // TODO: find out how to get each individual token back before the full answer is completed.
         // TODO: raise an OnTokenReceived event or something.
