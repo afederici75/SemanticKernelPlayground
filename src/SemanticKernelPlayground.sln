@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AleF.SemanticBots", "AleF.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AleF.SemanticBots.Tests", "AleF.SemanticBots.Tests\AleF.SemanticBots.Tests.csproj", "{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazoriseChatApp", "BlazoriseChatApp\BlazoriseChatApp.csproj", "{BFD3B20E-1E59-4952-B982-899EB854823D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BFD3B20E-1E59-4952-B982-899EB854823D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BFD3B20E-1E59-4952-B982-899EB854823D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BFD3B20E-1E59-4952-B982-899EB854823D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BFD3B20E-1E59-4952-B982-899EB854823D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
