@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AleF.SemanticBots", "AleF.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AleF.SemanticBots.Tests", "AleF.SemanticBots.Tests\AleF.SemanticBots.Tests.csproj", "{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorChat", "BlazorChat\BlazorChat.csproj", "{AEE925E3-CE22-4F86-91CA-F8DE46EC326A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWASMChar", "BlazorWASMChar\BlazorWASMChar.csproj", "{7D48718A-D655-428C-B191-706501314CAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEE925E3-CE22-4F86-91CA-F8DE46EC326A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEE925E3-CE22-4F86-91CA-F8DE46EC326A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEE925E3-CE22-4F86-91CA-F8DE46EC326A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEE925E3-CE22-4F86-91CA-F8DE46EC326A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D48718A-D655-428C-B191-706501314CAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D48718A-D655-428C-B191-706501314CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D48718A-D655-428C-B191-706501314CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D48718A-D655-428C-B191-706501314CAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
