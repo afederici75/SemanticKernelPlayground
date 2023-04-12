@@ -1,40 +1,41 @@
 ﻿@page "/chat"
+@inject ISemanticBot bot
 
 <PageTitle>Chat</PageTitle>
 
-<button @onclick="AddInteraction">Add Item</button>
-
-<ul>
-    @foreach (var item in Items)
-    {
-        <ChatInteractionCard Item="item" />
-    }
-</ul>
-
-<div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background-color: #f2f2f2; z-index: 1;">
-    <input type="text" @bind-value="@Ask" style="width: 80%; margin: 10px;" />
-    <button @onclick="AddInteraction" style="margin: 10px;">Add</button>
+<div>
+    <input type="text" @bind-value="@Ask" />
+    <button @onclick="AddInteraction">Add</button>
+    <button @onclick="AddRandom">Add</button>
 </div>
+
+
+@foreach (var item in Items)
+{
+    <ChatInteractionCard Item="item" />
+}
 
 @code {
     public List<ChatInteraction> Items { get; set; } = new List<ChatInteraction>();
     public string Ask { get; set; } = string.Empty;
+    public string Answer { get; set; } = string.Empty;
 
     int idx = 1;
-    void AddInteraction()
-    {
-        Items.Add(new ChatInteraction(
-            $"my question #{idx++} was '{Ask}'",
-            $"their answer at {DateTime.Now}",
-            TimeSpan.FromSeconds(2.3)
-        ));
+    Stopwatch sw = Stopwatch.StartNew();
+
+    async Task AddInteraction()
+    {        
+        //var answer = await bot.Send(Ask);
+        //sw.Reset();
+        Items.Insert(0, new ChatInteraction(Ask, Answer, TimeSpan.FromSeconds(2.3)));
     }
 
-    ChatInteraction Test { get; set; } = new ChatInteraction(
-            "my question",
-            "their answer",
+    void AddRandom()
+    {
+        Items.Insert(0, new ChatInteraction(
+            $"What time is it in New York City? Aswer using a decent format.#{idx++} was '{Ask}'",
+            $"It is not {DateTime.Now} in New York city. I don't go no time!",
             TimeSpan.FromSeconds(2.3)
-        );
-
-
+        ));
+    }   
 }

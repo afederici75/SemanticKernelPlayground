@@ -78,7 +78,7 @@ public class SemanticBot : ISemanticBot
     {
         IKernel kernel = Microsoft.SemanticKernel.Kernel.Builder
             .WithLogger(Logger)
-            .Configure(ConfigureKernel)
+            .Configure(ConfigureKernel)            
             // TODO: several other WithXXX to look into... Maybe too restrictive?
             .Build();
 

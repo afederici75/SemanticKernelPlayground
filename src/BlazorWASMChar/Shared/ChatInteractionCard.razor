@@ -1,12 +1,24 @@
 ﻿@using AleF.SemanticKernel.ChatBot.Model;
 
-<div class="card w-25">
+@*<span class="d-block p-2 bg-primary text-white">
+    <div>
+        <p class="text-start">@Item.Ask</p>
+    </div>    
+</span>
+<span class="d-block p-2 bg-dark text-white">
+      <div> 
+        <p class="text-end">@Item.Answer</p>
+        <p class="text-end"><small>@Item.Duration</small></p>
+    </div>
+</span>*@
+
+<div class="card">
+    <div class="card-header text-end">
+        @Item.Ask
+    </div>
     <div class="card-body">
-        <h5 class="card-title">@Item.Ask</h5>
-        <p class="card-text">@Item.Answer</p>
-        <blockquote class="card-text">$@Item.Duration</blockquote>
-        
-        <button class="btn btn-primary" type="button">XXX</button>        
+        <h6 class="card-title"></h6>
+        <p class="card-text">@Item.Answer</p>        
     </div>
 </div>
 
