@@ -1,11 +1,19 @@
 ﻿@inherits LayoutComponentBase
 
-<header>
-    <h1>TOP</h1>
-</header>
+<PageTitle>BlazorChat</PageTitle>
 
-<main> @Body </main>
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
 
-<footer>
-    <h1>BOTTOM</h1>
-</footer>
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

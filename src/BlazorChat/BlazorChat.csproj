@@ -4,12 +4,16 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>c071741e-e105-4c47-a33b-ac5b93742dd6</UserSecretsId>
+    <UserSecretsId>02676584-8771-4bc0-af97-8d481b97c5bd</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AleF.SemanticBots\AleF.SemanticBots.csproj" />
   </ItemGroup>
 
 </Project>

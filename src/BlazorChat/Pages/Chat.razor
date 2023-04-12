@@ -21,12 +21,10 @@
     public string Answer { get; set; } = string.Empty;
 
     int idx = 1;
-    Stopwatch sw = Stopwatch.StartNew();
 
     async Task AddInteraction()
     {        
-        //var answer = await bot.Send(Ask);
-        //sw.Reset();
+        var answer = await bot.Send(Ask);        
         Items.Insert(0, new ChatInteraction(Ask, Answer, TimeSpan.FromSeconds(2.3)));
     }
 
