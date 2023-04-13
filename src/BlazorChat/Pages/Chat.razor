@@ -4,16 +4,19 @@
 <PageTitle>Chat</PageTitle>
 
 <div>
-    <input type="text" @bind-value="@Ask" />
-    <button @onclick="AddInteraction">Add</button>
-    <button @onclick="AddRandom">Add</button>
+    <div class="overflow-scroll">
+        <input type="text" @bind-value="@Ask" />
+        <button @onclick="AddInteraction">Add</button>
+        <button @onclick="AddRandom">Add</button>
+    </div>
+    
+    <div class="scroll">
+    @foreach (var item in Items)
+    {
+        <ChatInteractionCard Item="item" />
+    }
+    </div>
 </div>
-
-
-@foreach (var item in Items)
-{
-    <ChatInteractionCard Item="item" />
-}
 
 @code {
     public List<ChatInteraction> Items { get; set; } = new List<ChatInteraction>();
