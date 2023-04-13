@@ -6,3 +6,6 @@ global using Microsoft.SemanticKernel;
 global using Microsoft.SemanticKernel.Configuration;
 global using Microsoft.SemanticKernel.Orchestration;
 global using Microsoft.SemanticKernel.SemanticFunctions;
+global using AleF.SemanticBots.Extensions;
+global using AleF.SemanticKernel.ChatBot.Model;
+global using static AleF.SemanticBots.Bots.SemanticBot;

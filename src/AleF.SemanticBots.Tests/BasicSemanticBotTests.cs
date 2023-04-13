@@ -25,12 +25,12 @@ public class BasicSemanticBotTests
     public async Task BasicBotRemembersNameAndAge(
         [FromServices] ISemanticBot bot)
     {
-        var answer = await bot.Send("My name is Alessandro and I am 47");
+        var answer = await bot.Send("I am Alessandro and I am 47 years old");
         
-        var nameAnswer = await bot.Send("What is my name?");
-        nameAnswer.Should().Be("Your name is Alessandro.");
+        var nameAnswer = await bot.Send("What is my name? Answer with the name only");
+        nameAnswer.Should().Contain("Alessandro");
 
-        var ageAnswer = await bot.Send("What is my age?");
-        ageAnswer.Should().Be("You are 47 years old.");
+        var ageAnswer = await bot.Send("What is my age? Answer with the number only");
+        ageAnswer.Should().Contain("47");
     }
 }

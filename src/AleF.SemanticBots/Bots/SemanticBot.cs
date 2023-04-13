@@ -1,6 +1,4 @@
-﻿using AleF.SemanticKernel.ChatBot.Model;
-
-namespace AleF.SemanticBots.Bots;
+﻿namespace AleF.SemanticBots.Bots;
 
 /// <summary>
 /// This class implements the base functionality for a chat bot. 
@@ -92,6 +90,7 @@ public class SemanticBot : ISemanticBot
         return kernel;
     }
 
+    // TODO: I am not sure all those {{{ and }}} help things. I hate magic strings but this seems overkill <G>
     protected virtual string GetPrompt() => @$"
 {Tags.ChatBot} can have a conversation with you about any topic.
 It can give explicit instructions or say 'I don't know' if it does not have an answer.
