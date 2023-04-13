@@ -4,14 +4,14 @@
 <PageTitle>Chat</PageTitle>
 
 <div style="height: calc(100vh - 80px); border: 1px solid green; padding: 10px;">
-    <div style="height: calc(100% - 40px); overflow-y: auto; border-bottom: 1px solid blue; padding-bottom: 10px;">
+    <div style="height: calc(100% - 40px); border: 1px solid blue; padding: 10px; overflow-y: auto;">
         @foreach (var item in Items)
         {
             <ChatInteractionCard Item="item" />
         }
     </div>
 
-    <div style="height: 40px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid green; padding-top: 10px;">
+    <div style="height: 40px; display: flex; justify-content: space-between; align-items: center; border: 1px solid red;">
         <input type="text" @bind-value="@Ask" style="flex: 1; padding: 5px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;" />
         <button @onclick="AddInteraction" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Add</button>
         <button @onclick="AddRandom" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Add Random</button>
