@@ -5,7 +5,7 @@
 
 <div style="height: calc(100vh - 80px); border: 1px solid green; padding: 10px;">
     <div style="height: calc(100% - 40px); border: 1px solid blue; padding: 10px; overflow-y: auto;">
-        @foreach (var item in Items)
+        @foreach (var item in bot.GetHistory())
         {
             <ChatInteractionCard Item="item" />
         }
@@ -13,30 +13,27 @@
 
     <div style="height: 40px; display: flex; justify-content: space-between; align-items: center; border: 1px solid red;">
         <input type="text" @bind-value="@Ask" style="flex: 1; padding: 5px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;" />
-        <button @onclick="AddInteraction" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Add</button>
-        <button @onclick="AddRandom" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Add Random</button>
+        <button @onclick="SendPrompt" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Add</button>
+        <button @onclick="RecallAllMemories" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Recall Memory</button>
     </div>
 </div>
 
 @code {
-    public List<ChatInteraction> Items { get; set; } = new List<ChatInteraction>();
-    public string Ask { get; set; } = string.Empty;
-    public string Answer { get; set; } = string.Empty;
+    public string Ask { get; set; } = "I am Alessandro and I am 47 years old";
 
-    int idx = 1;
-
-    async Task AddInteraction()
+    async Task SendPrompt()
     {
         var answer = await bot.Send(Ask);
-        Items.Insert(0, new ChatInteraction(Ask, Answer, TimeSpan.FromSeconds(2.3)));
     }
 
-    void AddRandom()
+    Task RecallAllMemories()
     {
-        Items.Insert(0, new ChatInteraction(
-            $"What time is it in New York City? Aswer using a decent format.#{idx++} was '{Ask}'",
-            $"It is not {DateTime.Now} in New York city. I don't go no time!",
-            TimeSpan.FromSeconds(2.3)
-        ));
+        string[] BasicQuestions =
+        {
+            "Say all that you remember from our chat so far.",            
+        };
+
+        Ask = BasicQuestions[new Random().Next(0, BasicQuestions.Length - 1)];
+        return SendPrompt();  
     }
 }

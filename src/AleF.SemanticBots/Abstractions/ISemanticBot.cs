@@ -1,4 +1,6 @@
-﻿namespace AleF.SemanticKernel.ChatBot.Abstractions;
+﻿using AleF.SemanticKernel.ChatBot.Model;
+
+namespace AleF.SemanticKernel.ChatBot.Abstractions;
 
 /// <summary>
 /// This interface defines the contract for an interactive bot 
@@ -18,4 +20,6 @@ public interface ISemanticBot
     /// Gets the context variables of the bot. See <see cref="ContextVariables"/>.
     /// </summary>
     public ContextVariables Context { get; }
+
+    public IEnumerable<ChatExchange> GetHistory();
 }

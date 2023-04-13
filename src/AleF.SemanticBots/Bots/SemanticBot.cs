@@ -1,4 +1,6 @@
-﻿namespace AleF.SemanticBots.Bots;
+﻿using AleF.SemanticKernel.ChatBot.Model;
+
+namespace AleF.SemanticBots.Bots;
 
 /// <summary>
 /// This class implements the base functionality for a chat bot. 
@@ -24,7 +26,8 @@ public class SemanticBot : ISemanticBot
     readonly protected SemanticBotOptions BotOptions;
     readonly protected NLPServiceOptions NLPOptions;
     readonly protected ILogger Logger;
-    readonly protected ISKFunction[]? Functions;    
+    readonly protected ISKFunction[]? Functions;
+    readonly protected List<ChatExchange> History = new List<ChatExchange>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SemanticBot"/> class.
@@ -42,12 +45,13 @@ public class SemanticBot : ISemanticBot
         Functions = CreateFunctions() ?? throw new ArgumentNullException(nameof(Functions)); // TODO: ArgumentNullException?
 
         Context = new ();
-        _history = string.Empty;        
+        Context.Set(Params.History, string.Empty);
     }
 
     public ContextVariables Context { get; }
+        
+    public IEnumerable<ChatExchange> GetHistory() => History;
 
-    string _history;
     /// <inheritdoc/>
     public async Task<string> Send(string prompt, CancellationToken cancellationToken)
     {
@@ -56,17 +60,20 @@ public class SemanticBot : ISemanticBot
 
         // Ask the question        
         Context.Set(Params.HumanInput, prompt);
-        Context.Set(Params.History, _history);
-
+        
         SKContext answer = await Kernel.RunAsync(Context, cancellationToken, funcs);
-        var cleanAnswer = answer.ToString().Trim();
+        var exchange = new ChatExchange(prompt, answer);
+        History.Add(exchange);
 
-        _history += $"\n{Tags.Human}: {prompt}\n{Tags.ChatBot}: {cleanAnswer.ToString()}\n";
+        // Updates the history parameter
+        Context.Get(Params.History, out var textHistory);
+        textHistory += exchange.ToChatHistoryString();
+        Context.Set(Params.History, textHistory);
 
         // TODO: find out how to get each individual token back before the full answer is completed.
         // TODO: raise an OnTokenReceived event or something.
 
-        return cleanAnswer;
+        return exchange.Answer;
     }    
 
     protected virtual void ConfigureKernel(KernelConfig config)
