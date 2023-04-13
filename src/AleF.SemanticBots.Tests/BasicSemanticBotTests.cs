@@ -27,10 +27,10 @@ public class BasicSemanticBotTests
     {
         var answer = await bot.Send("I am Alessandro and I am 47 years old");
         
-        var nameAnswer = await bot.Send("What is my name? Answer with the name only");
+        var nameAnswer = await bot.Send("What is my name?");
         nameAnswer.Should().Contain("Alessandro");
 
-        var ageAnswer = await bot.Send("What is my age? Answer with the number only");
+        var ageAnswer = await bot.Send("What is my age?");
         ageAnswer.Should().Contain("47");
     }
 }
