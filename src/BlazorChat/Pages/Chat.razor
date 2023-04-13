@@ -3,18 +3,18 @@
 
 <PageTitle>Chat</PageTitle>
 
-<div>
-    <div class="overflow-scroll">
-        <input type="text" @bind-value="@Ask" />
-        <button @onclick="AddInteraction">Add</button>
-        <button @onclick="AddRandom">Add</button>
+<div style="height: calc(100vh - 80px); border: 1px solid green; padding: 10px;">
+    <div style="height: calc(100% - 40px); overflow-y: auto; border-bottom: 1px solid blue; padding-bottom: 10px;">
+        @foreach (var item in Items)
+        {
+            <ChatInteractionCard Item="item" />
+        }
     </div>
-    
-    <div class="scroll">
-    @foreach (var item in Items)
-    {
-        <ChatInteractionCard Item="item" />
-    }
+
+    <div style="height: 40px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid green; padding-top: 10px;">
+        <input type="text" @bind-value="@Ask" style="flex: 1; padding: 5px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;" />
+        <button @onclick="AddInteraction" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Add</button>
+        <button @onclick="AddRandom" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Add Random</button>
     </div>
 </div>
 
@@ -26,8 +26,8 @@
     int idx = 1;
 
     async Task AddInteraction()
-    {        
-        var answer = await bot.Send(Ask);        
+    {
+        var answer = await bot.Send(Ask);
         Items.Insert(0, new ChatInteraction(Ask, Answer, TimeSpan.FromSeconds(2.3)));
     }
 
@@ -38,5 +38,5 @@
             $"It is not {DateTime.Now} in New York city. I don't go no time!",
             TimeSpan.FromSeconds(2.3)
         ));
-    }   
+    }
 }
