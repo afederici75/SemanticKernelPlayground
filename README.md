@@ -98,6 +98,9 @@ become familiar with Semantic Kernel.
 3. https://github.com/afederici75/SemanticKernelPlayground/blob/main/src/AleF.SemanticBots/Bots/SemanticBot.cs
    The Bot implementation itself. It shows a rudimentary use of memory and it's likely in need of refactoring.
    See questions below about memory.
+   
+ 4. Unit Tests
+    https://github.com/afederici75/SemanticKernelPlayground/blob/main/src/AleF.SemanticBots.Tests/BasicSemanticBotTests.cs
 
 ## Big Questions and Next Steps
 1. ChatGPT's client app shows that responses are received in a stream. How do I implement this in
