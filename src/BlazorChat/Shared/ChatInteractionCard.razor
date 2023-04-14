@@ -1,0 +1,14 @@
+﻿<div class="card">
+    <div class="card-header text-end">
+        @Item.Ask
+    </div>
+    <div class="card-body">
+        <h6 class="card-title"></h6>
+        <p class="card-text">@Item.Answer</p>        
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required ChatExchange Item { get; set; }
+}

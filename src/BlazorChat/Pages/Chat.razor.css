@@ -1,0 +1,37 @@
+﻿.chat-container {
+    height: calc(100vh - 80px);
+    border: 1px solid green;
+    padding: 10px;
+}
+
+.chat-history {
+    height: calc(100% - 40px);
+    border: 1px solid blue;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.user-input {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid red;
+}
+
+    .user-input input[type="text"] {
+        flex: 1;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .user-input button {
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }

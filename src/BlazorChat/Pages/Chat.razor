@@ -1,0 +1,39 @@
+﻿@page "/chat"
+@inject ISemanticBot bot
+
+<PageTitle>Chat</PageTitle>
+
+<div class="chat-container">
+    <div class="chat-history">
+        @foreach (var item in bot.GetHistory())
+        {
+            <ChatInteractionCard Item="item" />
+        }
+    </div>
+
+    <div class="user-input">
+        <input type="text" @bind-value="@Ask" />
+        <button @onclick="SendPrompt">Add</button>
+        <button @onclick="RecallAllMemories">Recall Memory</button>
+    </div>
+</div>
+
+@code {
+    public string Ask { get; set; } = "I am Alessandro and I am 47 years old";
+
+    async Task SendPrompt()
+    {
+        var answer = await bot.Send(Ask);
+    }
+
+    Task RecallAllMemories()
+    {
+        string[] BasicQuestions =
+        {
+            "Say all that you remember from our chat so far.",
+    };
+
+        Ask = BasicQuestions[new Random().Next(0, BasicQuestions.Length - 1)];
+        return SendPrompt();
+    }
+}
