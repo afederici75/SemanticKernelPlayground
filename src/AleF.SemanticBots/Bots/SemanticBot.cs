@@ -1,4 +1,8 @@
-﻿namespace AleF.SemanticBots.Bots;
+﻿using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.CoreSkills;
+using Microsoft.SemanticKernel.Memory;
+
+namespace AleF.SemanticBots.Bots;
 
 /// <summary>
 /// This class implements the base functionality for a chat bot. 
@@ -50,11 +54,27 @@ public class SemanticBot : ISemanticBot
         
     public IEnumerable<ChatExchange> GetHistory() => History;
 
+    const string MemoryCollectionName = "aboutMe";
+
+    bool _loaded = false;
+    async Task LoadMemory()
+    {
+        if (_loaded) 
+            return;
+
+        await Kernel.Memory.SaveInformationAsync(MemoryCollectionName, id: "info1", text: "My name is Alessandro");
+        await Kernel.Memory.SaveInformationAsync(MemoryCollectionName, id: "info2", text: "I am 47 years old");
+
+        _loaded = true;
+    }
+
     /// <inheritdoc/>
     public async Task<string> Send(string prompt, CancellationToken cancellationToken)
     {
         prompt = prompt?.Trim() ?? throw new ArgumentNullException(nameof(prompt));
         var funcs = Functions?.ToArray() ?? throw new ArgumentNullException(nameof(Functions));
+
+        await LoadMemory();
 
         // Ask the question        
         Context.Set(Params.HumanInput, prompt);
@@ -76,16 +96,21 @@ public class SemanticBot : ISemanticBot
 
     protected virtual void ConfigureKernel(KernelConfig config)
     {
-        config.AddOpenAITextCompletion("davinci", NLPOptions.Model, NLPOptions.ApiKey, NLPOptions.Organization);
+        config.AddOpenAITextCompletionService("davinci", NLPOptions.Model, NLPOptions.ApiKey, NLPOptions.Organization);
+        config.AddOpenAIEmbeddingGenerationService("ada", "text-embedding-ada-002", NLPOptions.ApiKey);
     }
 
     protected IKernel CreateKernel() 
     {
         IKernel kernel = Microsoft.SemanticKernel.Kernel.Builder
             .WithLogger(Logger)
-            .Configure(ConfigureKernel)            
-            // TODO: several other WithXXX to look into... Maybe too restrictive?
+            .Configure(ConfigureKernel)
+             // TODO: several other WithXXX to look into... Maybe too restrictive?
+            .WithMemoryStorage(new VolatileMemoryStore())
             .Build();
+
+        var memorySkill = new TextMemorySkill();
+        kernel.ImportSkill(new TextMemorySkill());
 
         return kernel;
     }
