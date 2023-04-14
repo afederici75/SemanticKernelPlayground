@@ -6,7 +6,7 @@ It is based on the [Microsoft Semantic Kernel](https://github.com/microsoft/sema
 To use the library, simply reference the assembly AleF.SemanticBots in your project and call the
 extension method AddSemanticBots() during Depenceny Injection configuration:
 
-```
+```csharp
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddUserSecrets(typeof(App).Assembly);
 
@@ -22,7 +22,7 @@ Once SemanticBots is configured, you can inject the ISemanticBot service in your
 using it.
 
 The service interface is defined as:
-```
+```csharp
 public interface ISemanticBot
 {
     public Task<string> Send(string prompt, CancellationToken cancellationToken = default);
