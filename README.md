@@ -1,6 +1,10 @@
 # Semantic Bots Library
-This library is a collection of bots that can be used to build semantic applications.
+This library will provide access to bots that can be used to build semantic applications.
 It is based on the [Microsoft Semantic Kernel](https://github.com/microsoft/semantic-kernel).
+
+## Quick example
+The following animation shows how the application BlazorChat uses the SemanticBots library to 
+create a chat experience.
 
 ## Installation and Usage
 To use the library, simply reference the assembly AleF.SemanticBots in your project and call the
