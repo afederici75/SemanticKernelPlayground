@@ -6,6 +6,8 @@ It is based on the [Microsoft Semantic Kernel](https://github.com/microsoft/sema
 The following animation shows how the application BlazorChat uses the SemanticBots library to 
 create a chat experience.
 
+![BasicChatDemo](https://user-images.githubusercontent.com/13766049/232076021-275c2ee2-aa29-4b1e-80f2-d30289413c36.gif)
+
 ## Installation and Usage
 To use the library, simply reference the assembly AleF.SemanticBots in your project and call the
 extension method AddSemanticBots() during Dependency Injection configuration:
@@ -96,6 +98,9 @@ become familiar with Semantic Kernel.
 3. https://github.com/afederici75/SemanticKernelPlayground/blob/main/src/AleF.SemanticBots/Bots/SemanticBot.cs
    The Bot implementation itself. It shows a rudimentary use of memory and it's likely in need of refactoring.
    See questions below about memory.
+   
+ 4. Unit Tests
+    https://github.com/afederici75/SemanticKernelPlayground/blob/main/src/AleF.SemanticBots.Tests/BasicSemanticBotTests.cs
 
 ## Big Questions and Next Steps
 1. ChatGPT's client app shows that responses are received in a stream. How do I implement this in
