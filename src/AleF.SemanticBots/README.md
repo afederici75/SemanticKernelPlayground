@@ -34,7 +34,7 @@ public interface ISemanticBot
 ## Using ISemanticBot to Create a Chat Application
 The sample BlazorChat application shows how to use the ISemanticBot service to create a chat application.
 The main Chat.razor page is shown below:
-```csharp
+```razor
 @page "/chat"
 @inject ISemanticBot bot
 
