@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AleF.SemanticBots", "AleF.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AleF.SemanticBots.Tests", "AleF.SemanticBots.Tests\AleF.SemanticBots.Tests.csproj", "{6E28FE83-D7C3-48AA-AA08-5D37FE6E4F29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorChat", "BlazorChat\BlazorChat.csproj", "{189009B6-613C-450A-91CA-3BD0B7F3F4F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorChat", "BlazorChat\BlazorChat.csproj", "{189009B6-613C-450A-91CA-3BD0B7F3F4F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FF9CF36E-3503-4C73-8889-FF9528ADA32A}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

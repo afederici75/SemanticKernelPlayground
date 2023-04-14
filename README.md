@@ -1,2 +1,3 @@
 # SemanticKernel
-SemanticKernel examples and tests
+
+SemanticKernel examples and tests.
