@@ -3,18 +3,18 @@
 
 <PageTitle>Chat</PageTitle>
 
-<div style="height: calc(100vh - 80px); border: 1px solid green; padding: 10px;">
-    <div style="height: calc(100% - 40px); border: 1px solid blue; padding: 10px; overflow-y: auto;">
+<div class="chat-container">
+    <div class="chat-history">
         @foreach (var item in bot.GetHistory())
         {
             <ChatInteractionCard Item="item" />
         }
     </div>
 
-    <div style="height: 40px; display: flex; justify-content: space-between; align-items: center; border: 1px solid red;">
-        <input type="text" @bind-value="@Ask" style="flex: 1; padding: 5px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;" />
-        <button @onclick="SendPrompt" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Add</button>
-        <button @onclick="RecallAllMemories" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Recall Memory</button>
+    <div class="user-input">
+        <input type="text" @bind-value="@Ask" />
+        <button @onclick="SendPrompt">Add</button>
+        <button @onclick="RecallAllMemories">Recall Memory</button>
     </div>
 </div>
 
@@ -30,10 +30,10 @@
     {
         string[] BasicQuestions =
         {
-            "Say all that you remember from our chat so far.",            
-        };
+            "Say all that you remember from our chat so far.",
+    };
 
         Ask = BasicQuestions[new Random().Next(0, BasicQuestions.Length - 1)];
-        return SendPrompt();  
+        return SendPrompt();
     }
 }
