@@ -1,6 +1,4 @@
-﻿using AleF.SemanticKernel.ChatBot.Model;
-
-namespace AleF.SemanticKernel.ChatBot.Abstractions;
+﻿namespace AleF.SemanticKernel.ChatBot.Abstractions;
 
 /// <summary>
 /// This interface defines the contract for an interactive bot 
@@ -21,5 +19,15 @@ public interface ISemanticBot
     /// </summary>
     public ContextVariables Context { get; }
 
+    /// <summary>
+    /// Returns all chat exchanges that have been performed with the bot.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerable<ChatExchange> GetHistory();
+
+    // TODO: add 'facts' which would be statements the bot knows about before the chat starts.
+    // For instance a fact could be my name is Alessandro and I am 47 years old.
+
+    // TODO: add ability to load native and semantics functions and configure the bot.
+    // A Configure() method or some fluent builder extensions could help.
 }
