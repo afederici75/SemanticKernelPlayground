@@ -1,5 +1,6 @@
 ﻿using AleF.SemanticBots.Bots;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -11,9 +12,9 @@ public static class DependencyInjectionExtensions
         // IOptions
         services.Configure<NLPServiceOptions>(configuration.GetSection(NLPServiceOptions.SettingName));
 
-        // Services
-        services.AddScoped<ISemanticBot, SemanticBot>();
-
+        // Services        
+        services.AddScoped<ISemanticBot, BetterSemanticBot>();
+        
         return services;
     }
 }

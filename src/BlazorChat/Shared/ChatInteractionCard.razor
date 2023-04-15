@@ -1,14 +1,16 @@
-﻿<div class="card">
+﻿@using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
+
+<div class="card">
     <div class="card-header text-end">
-        @Item.Ask
+        @Item.AuthorRole
     </div>
     <div class="card-body">
         <h6 class="card-title"></h6>
-        <p class="card-text">@Item.Answer</p>        
+        <p class="card-text">@Item.Content</p>        
     </div>
 </div>
 
 @code {
     [Parameter]
-    public required ChatExchange Item { get; set; }
+    public required Message Item { get; set; }
 }

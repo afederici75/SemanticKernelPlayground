@@ -1,4 +1,5 @@
 ﻿using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.CoreSkills;
 using Microsoft.SemanticKernel.Memory;
 
@@ -25,7 +26,6 @@ public class SemanticBot : ISemanticBot
     }
 
     readonly protected IKernel Kernel;
-    readonly protected SemanticBotOptions BotOptions;
     readonly protected NLPServiceOptions NLPOptions;
     readonly protected ILogger Logger;
     readonly protected ISKFunction[]? Functions;
@@ -36,10 +36,8 @@ public class SemanticBot : ISemanticBot
     /// </summary>
     public SemanticBot(
         ILogger<SemanticBot> logger,
-        IOptions<NLPServiceOptions> nlpOptions, 
-        IOptions<SemanticBotOptions> botOptions)
+        IOptions<NLPServiceOptions> nlpOptions)
     {
-        BotOptions = botOptions.Value; // TODO: validate options
         NLPOptions = nlpOptions.Value; // TODO: validate options
         Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         
@@ -69,7 +67,7 @@ public class SemanticBot : ISemanticBot
     }
 
     /// <inheritdoc/>
-    public async Task<string> Send(string prompt, CancellationToken cancellationToken)
+    public async Task<string> Send(string prompt, ChatRequestSettings? settings, CancellationToken cancellationToken)
     {
         prompt = prompt?.Trim() ?? throw new ArgumentNullException(nameof(prompt));
         var funcs = Functions?.ToArray() ?? throw new ArgumentNullException(nameof(Functions));
@@ -130,12 +128,12 @@ It can give explicit instructions or say 'I don't know' if it does not have an a
         // TODO: this should probably be changed to use the planner
         var promptConfig = new PromptTemplateConfig
         {
-            Completion =
-            {
-                MaxTokens = BotOptions.MaxTokens,
-                Temperature = BotOptions.Temperature,
-                TopP = BotOptions.TopP,
-            }
+            //Completion =
+            //{
+            //    MaxTokens = BotOptions.MaxTokens,
+            //    Temperature = BotOptions.Temperature,
+            //    TopP = BotOptions.TopP,
+            //}
         };
 
         var prompt = GetPrompt();
@@ -149,5 +147,10 @@ It can give explicit instructions or say 'I don't know' if it does not have an a
         };
 
         return funcs;
-    }   
+    }
+
+    IEnumerable<ChatHistory.Message> ISemanticBot.GetHistory()
+    {
+        throw new NotImplementedException();
+    }
 }
