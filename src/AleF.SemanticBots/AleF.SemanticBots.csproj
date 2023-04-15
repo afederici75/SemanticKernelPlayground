@@ -10,4 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0-preview.3.23174.8" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="0.11.146.1-preview" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Skills\" />
+  </ItemGroup>
 </Project>
