@@ -1,11 +1,14 @@
 ﻿@page "/chat"
-@inject ISemanticBot bot
+@inject ISemanticBot Bot
+@inject IJSRuntime JSRuntime
+
+@using Microsoft.JSInterop
 
 <PageTitle>Chat</PageTitle>
 
 <div class="chat-container">
-    <div class="chat-history">
-        @foreach (var item in bot.GetHistory())
+    <div class="chat-history" @ref="chatHistoryRef">
+        @foreach (var item in Bot.GetHistory())
         {
             <ChatInteractionCard Item="item" />
         }
@@ -19,11 +22,16 @@
 </div>
 
 @code {
-    public string Ask { get; set; } = "I am Alessandro and I am 47 years old";
+    public ElementReference chatHistoryRef;
+
+    private string Ask { get; set; } = "I am Alessandro and I am 47 years old";
 
     async Task SendPrompt()
     {
-        var answer = await bot.Send(Ask);
+        var answer = await Bot.Send(Ask);        
+
+        await InvokeAsync(async () => await ScrollToBottomAsync(chatHistoryRef));
+        Ask = string.Empty;
     }
 
     Task RecallAllMemories()
@@ -31,9 +39,30 @@
         string[] BasicQuestions =
         {
             "Say all that you remember from our chat so far.",
-        };
+            "What is my name?",
+            "What is my age?",
+    };
 
         Ask = BasicQuestions[new Random().Next(0, BasicQuestions.Length - 1)];
         return SendPrompt();
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ScrollToBottomAsync(chatHistoryRef);
+        }
+    }
+
+    [JSInvokable("scrollToBottom")]
+    public async Task ScrollToBottomAsync(ElementReference element)
+    {
+        // TODO: this does not work right. There's an item left out at the bottom...
+        await JSRuntime.InvokeVoidAsync(
+            "eval", 
+            "document.querySelector('.chat-history > :last-child')?.scrollIntoView({ block: 'end' });");
+    }
+
+
 }

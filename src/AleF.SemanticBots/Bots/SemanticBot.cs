@@ -96,5 +96,5 @@ public class SemanticBot : ISemanticBot
         return answer;
     }
 
-    public IReadOnlyList<ChatInteraction> GetHistory() => _interactions;
+    public IEnumerable<ChatInteraction> GetHistory() => _interactions;
 }

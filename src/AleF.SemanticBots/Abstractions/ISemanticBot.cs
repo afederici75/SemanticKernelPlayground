@@ -17,5 +17,5 @@ public interface ISemanticBot
     /// <returns>The bot's reply.</returns>
     public Task<string> Send(string prompt, ChatRequestSettings? settings = default, CancellationToken cancellationToken = default);
 
-    public IReadOnlyList<ChatInteraction> GetHistory();
+    public IEnumerable<ChatInteraction> GetHistory();
 }

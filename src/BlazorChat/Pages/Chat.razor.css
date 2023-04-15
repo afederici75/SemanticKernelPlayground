@@ -9,6 +9,7 @@
     border: 1px solid blue;
     padding: 10px;
     overflow-y: auto;
+    scroll-behavior: smooth;    
 }
 
 .user-input {
