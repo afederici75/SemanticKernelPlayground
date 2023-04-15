@@ -1,12 +1,10 @@
 ﻿global using AleF.SemanticKernel.ChatBot.Abstractions;
+global using AleF.SemanticKernel.ChatBot.Model;
 global using AleF.SemanticKernel.Options;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.SemanticKernel;
+global using Microsoft.SemanticKernel.AI;
+global using Microsoft.SemanticKernel.AI.ChatCompletion;
+global using Microsoft.SemanticKernel.Connectors.OpenAI.ChatCompletion;
 global using Microsoft.SemanticKernel.Orchestration;
-global using Microsoft.SemanticKernel.SemanticFunctions;
-global using Microsoft.SemanticKernel.CoreSkills;
-global using Microsoft.SemanticKernel.Memory;
-global using AleF.SemanticBots.Extensions;
-global using AleF.SemanticKernel.ChatBot.Model;
-global using static AleF.SemanticBots.Bots.SemanticBot;

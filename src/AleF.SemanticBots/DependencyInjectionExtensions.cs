@@ -13,7 +13,7 @@ public static class DependencyInjectionExtensions
         services.Configure<NLPServiceOptions>(configuration.GetSection(NLPServiceOptions.SettingName));
 
         // Services        
-        services.AddScoped<ISemanticBot, BetterSemanticBot>();
+        services.AddScoped<ISemanticBot, SemanticBot>();
         
         return services;
     }

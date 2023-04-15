@@ -1,156 +1,100 @@
-﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
-using Microsoft.SemanticKernel.CoreSkills;
-using Microsoft.SemanticKernel.Memory;
+﻿using System.Data.SqlTypes;
+using System.Diagnostics;
+using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
 
 namespace AleF.SemanticBots.Bots;
 
-/// <summary>
-/// This class implements the base functionality for a chat bot. 
-/// It implements the interface <see cref="ISemanticBot"/>.
-/// </summary>
 public class SemanticBot : ISemanticBot
 {
-    // https://github.com/microsoft/semantic-kernel/blob/32e35d7c28a40d67bd27d81ddbfe028697c872a7/samples/notebooks/dotnet/4-context-variables-chat.ipynb
+    readonly IKernel _kernel;
+    readonly ILogger _logger;
+    readonly IChatCompletion _chatCompletion;
+    readonly OpenAIChatHistory _chatHistory;
+    readonly List<ChatInteraction> _interactions;
 
-    public static class Params
-    {
-        public const string History = "history";
-        public const string HumanInput = "human_input"; 
-    }
-
-    public static class Tags
-    {
-        public const string ChatBot = "ChatBot";
-        public const string Human = "human";
-    }
-
-    readonly protected IKernel Kernel;
-    readonly protected NLPServiceOptions NLPOptions;
-    readonly protected ILogger Logger;
-    readonly protected ISKFunction[]? Functions;
-    readonly protected List<ChatExchange> History = new List<ChatExchange>();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SemanticBot"/> class.
-    /// </summary>
     public SemanticBot(
         ILogger<SemanticBot> logger,
-        IOptions<NLPServiceOptions> nlpOptions)
+        IOptions<NLPServiceOptions> options)
     {
-        NLPOptions = nlpOptions.Value; // TODO: validate options
-        Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        
-        Kernel = CreateKernel() ?? throw new ArgumentNullException(nameof(Kernel));
-        Functions = CreateFunctions() ?? throw new ArgumentNullException(nameof(Functions)); // TODO: ArgumentNullException?
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _kernel = BuildKernel(options.Value);
 
-        Context = new ();
-        Context.Set(Params.History, string.Empty);
+        _chatCompletion = _kernel.GetService<IChatCompletion>();
+        _chatHistory = (OpenAIChatHistory)_chatCompletion.CreateNewChat(GetPrompt());
+
+        _interactions = new List<ChatInteraction>();
     }
 
-    public ContextVariables Context { get; }
-        
-    public IEnumerable<ChatExchange> GetHistory() => History;
-
-    const string MemoryCollectionName = "aboutMe";
-
-    bool _loaded = false;
-    async Task LoadMemory()
+    protected virtual string GetPrompt()
     {
-        if (_loaded) 
-            return;
-
-        await Kernel.Memory.SaveInformationAsync(MemoryCollectionName, id: "info1", text: "My name is Alessandro");
-        await Kernel.Memory.SaveInformationAsync(MemoryCollectionName, id: "info2", text: "I am 47 years old");
-
-        _loaded = true;
+        return "You are a friendly, intelligent, and curious assistant who is good at conversation.Your name is Orko.";
     }
 
-    /// <inheritdoc/>
-    public async Task<string> Send(string prompt, ChatRequestSettings? settings, CancellationToken cancellationToken)
+    protected virtual IKernel BuildKernel(NLPServiceOptions options)
     {
-        prompt = prompt?.Trim() ?? throw new ArgumentNullException(nameof(prompt));
-        var funcs = Functions?.ToArray() ?? throw new ArgumentNullException(nameof(Functions));
-
-        await LoadMemory();
-
-        // Ask the question        
-        Context.Set(Params.HumanInput, prompt);
-        
-        SKContext answer = await Kernel.RunAsync(Context, cancellationToken, funcs);
-        var exchange = new ChatExchange(prompt, answer);
-        History.Add(exchange);
-
-        // Updates the history parameter
-        Context.Get(Params.History, out var textHistory);
-        textHistory += exchange.ToChatHistoryString();
-        Context.Set(Params.History, textHistory);
-
-        // TODO: find out how to get each individual token back before the full answer is completed.
-        // TODO: raise an OnTokenReceived event or something.
-
-        return exchange.Answer;
-    }    
-
-    protected virtual void ConfigureKernel(KernelConfig config)
-    {
-        config.AddOpenAITextCompletionService("davinci", NLPOptions.Model, NLPOptions.ApiKey, NLPOptions.Organization);
-        config.AddOpenAIEmbeddingGenerationService("ada", "text-embedding-ada-002", NLPOptions.ApiKey);
-    }
-
-    protected IKernel CreateKernel() 
-    {
-        IKernel kernel = Microsoft.SemanticKernel.Kernel.Builder
-            .WithLogger(Logger)
-            .Configure(ConfigureKernel)
-             // TODO: several other WithXXX to look into... Maybe too restrictive?
-            .WithMemoryStorage(new VolatileMemoryStore())
+        var kernel = Kernel.Builder
+            .WithLogger(_logger) // TODO: maybe I should have used a LoggerFactory?
+            .Configure(cfg =>
+            {
+                // IMPORTANT: if the model is not "gpt-3.5-turbo" we get errors in the HTTP calls later.
+                cfg.AddOpenAIChatCompletionService("chat", options.ChatModel, options.ApiKey);                
+            })
+            // TODO: several other WithXXX to look into...
+            //.WithMemoryStorage(new VolatileMemoryStore())
             .Build();
 
-        var memorySkill = new TextMemorySkill();
-        kernel.ImportSkill(new TextMemorySkill());
+        AddSkills(kernel);
 
         return kernel;
     }
 
-    // TODO: I am not sure all those {{{ and }}} help things. I hate magic strings but this seems overkill <G>
-    protected virtual string GetPrompt() => @$"
-{Tags.ChatBot} can have a conversation with you about any topic.
-It can give explicit instructions or say 'I don't know' if it does not have an answer.
-
-{{{{${Params.History}}}}}
-
-{Tags.Human}: {{{{${Params.HumanInput}}}}}
-{Tags.ChatBot}:";
-
-    protected virtual ISKFunction[] CreateFunctions()
+    protected virtual void AddSkills(IKernel kernel)
     {
-        // TODO: this should probably be changed to use the planner
-        var promptConfig = new PromptTemplateConfig
-        {
-            //Completion =
-            //{
-            //    MaxTokens = BotOptions.MaxTokens,
-            //    Temperature = BotOptions.Temperature,
-            //    TopP = BotOptions.TopP,
-            //}
-        };
-
-        var prompt = GetPrompt();
-        var promptTemplate = new PromptTemplate(prompt, promptConfig, Kernel);
-        var functionConfig = new SemanticFunctionConfig(promptConfig, promptTemplate);
-        var chatFunction = Kernel.RegisterSemanticFunction(Tags.ChatBot, "Chat", functionConfig);
-
-        var funcs = new ISKFunction[]
-        {
-            chatFunction
-        };
-
-        return funcs;
+        // No need for any at this moment
     }
 
-    IEnumerable<ChatHistory.Message> ISemanticBot.GetHistory()
+    protected virtual ChatRequestSettings GetRequestSettings()
     {
-        throw new NotImplementedException();
+        var result = new ChatRequestSettings()
+        {
+            MaxTokens = 1500,
+            Temperature = 0.7, // 0.0 - 1.0
+            FrequencyPenalty = 0, // 0.0 - 2.0
+            PresencePenalty = 0, // 0.0 - 2.0                                 
+        };
+
+        return result;
     }
+
+    public async Task<string> Send(string prompt, ChatRequestSettings? settings = default, CancellationToken cancellationToken = default)
+    {
+        var answer = string.Empty;
+        settings = settings ?? GetRequestSettings();
+
+        try
+        {
+            // The chat history is used as context for the prompt.
+            _chatHistory.AddUserMessage(prompt);
+            
+            // Calls OpenAI
+            var sw = Stopwatch.StartNew();
+            answer = await _chatCompletion.GenerateMessageAsync(_chatHistory, settings);
+            sw.Stop();
+
+            // Updates the context with the response.
+            _chatHistory.AddAssistantMessage(answer);
+
+            // Add a new ChatInteraction
+            _interactions.Add(new ChatInteraction(prompt, answer, sw.Elapsed));
+        }
+        catch (AIException aiex)
+        {
+            // Reply with the error message if there is one
+            answer = $"Semantic Kernel returned an error ({aiex.Message}). Please try again.";
+        }
+
+        return answer;
+    }
+
+    public IReadOnlyList<ChatInteraction> GetHistory() => _interactions;
 }
