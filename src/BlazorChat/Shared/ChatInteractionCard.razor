@@ -1,16 +1,14 @@
-﻿@using static Microsoft.SemanticKernel.AI.ChatCompletion.ChatHistory;
-
-<div class="card">
-    <div class="card-header text-end">
-        @Item.AuthorRole
+﻿<div class="card">
+    <div class="card-header">
+        @Item.Prompt
     </div>
     <div class="card-body">
-        <h6 class="card-title"></h6>
-        <p class="card-text">@Item.Content</p>        
+        <h6 class="card-title">@Math.Round(Item.Duration.TotalMilliseconds)</h6>
+        <p class="card-text">@Item.Reply</p>        
     </div>
 </div>
 
 @code {
     [Parameter]
-    public required Message Item { get; set; }
+    public required ChatInteraction Item { get; set; }
 }

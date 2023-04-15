@@ -1,5 +1,4 @@
 using BlazorChat;
-using BlazorChat.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -11,7 +10,6 @@ builder.Services.AddSemanticBots(builder.Configuration);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 
 var app = builder.Build();
 
