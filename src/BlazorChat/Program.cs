@@ -1,6 +1,8 @@
+using AleF.SemanticKernel.Options;
 using BlazorChat;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddUserSecrets(typeof(App).Assembly);

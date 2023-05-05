@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AleF.SemanticBots.Bots;
 
+
 public class EchoBot : ISemanticBot
 {    
     List<ChatInteraction> _fakeInteractions = new List<ChatInteraction>();
@@ -26,4 +27,7 @@ public class EchoBot : ISemanticBot
 
         return Task.FromResult(response);
     }
+
+
+    
 }
